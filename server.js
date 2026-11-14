@@ -151,6 +151,32 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Debug endpoint: sends a test email to [to] and returns the Brevo error detail.
+  // Requires the relay token. GET /debug?to=you@example.com
+  if (req.method === 'GET' && req.url && req.url.startsWith('/debug')) {
+    if (RELAY_TOKEN && req.headers['x-relay-token'] !== RELAY_TOKEN) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, message: 'Unauthorized.' }));
+      return;
+    }
+    const to = new URL(req.url, 'http://x').searchParams.get('to') || '';
+    if (!isValidEmail(to)) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, message: 'Pass ?to=your@email.com' }));
+      return;
+    }
+    try {
+      const info = await sendOtpEmail(to, '123456');
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, sent: true, messageId: info.messageId || 'ok' }));
+    } catch (err) {
+      console.error('[relay] debug send failed:', err.message);
+      res.writeHead(502, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, sent: false, error: err.message }));
+    }
+    return;
+  }
+
   // Only the OTP endpoint is exposed; everything else is 404.
   if (req.method !== 'POST' || req.url !== '/sendOtp') {
     res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -196,8 +222,13 @@ const server = http.createServer(async (req, res) => {
     res.end(JSON.stringify({ ok: true, message: 'Code sent to ' + email + '.' }));
   } catch (err) {
     console.error('[relay] send failed:', err.message);
+    const hint = /sender/i.test(err.message)
+      ? ' Verify the sender email in Brevo (Settings > Senders & Domains).'
+      : /api.?key|unauthorized|forbidden|401|403/i.test(err.message)
+        ? ' Check the BREVO_API_KEY env var in Render.'
+        : '';
     res.writeHead(502, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ ok: false, message: 'Could not send the code. Please try again later.' }));
+    res.end(JSON.stringify({ ok: false, message: 'Could not send the code. Please try again later.' + hint }));
   }
 });
 
