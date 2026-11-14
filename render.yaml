@@ -8,11 +8,12 @@ services:
     plan: free
     region: singapore
     branch: main
-    rootDir: relay
     buildCommand: npm install
     startCommand: node server.js
     healthCheckPath: /
     envVars:
+      - key: NODE_VERSION
+        value: "20"
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
