@@ -94,7 +94,8 @@ function readBody(req) {
     req.on('end', () => {
       try {
         resolve(data ? JSON.parse(data) : {});
-      } catch (_) {
+      } catch (e) {
+        console.error('[relay] invalid_json, raw body length=', data.length, 'body=', JSON.stringify(data).slice(0, 300));
         reject(new Error('invalid_json'));
       }
     });
