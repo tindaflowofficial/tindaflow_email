@@ -146,6 +146,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Health check endpoint (Render pings GET / for liveness).
+  if (req.method === 'GET' && req.url === '/') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ ok: true, service: 'tindaflow-otp-relay' }));
+    return;
+  }
+
   // Only the OTP endpoint is exposed; everything else is 404.
   if (req.method !== 'POST' || req.url !== '/sendOtp') {
     res.writeHead(404, { 'Content-Type': 'application/json' });
