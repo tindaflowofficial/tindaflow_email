@@ -190,7 +190,6 @@ const server = http.createServer(async (req, res) => {
     }
 
     const info = await sendOtpEmail(email, code);
-    const info = await sendOtpEmail(email, code);
     console.log(`[relay] sent code to ${email} (${info.messageId || 'ok'})`);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
