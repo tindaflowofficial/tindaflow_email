@@ -186,10 +186,6 @@ const server = http.createServer(async (req, res) => {
 
   // Shared-secret check (if configured). Only the app knows RELAY_TOKEN.
   if (RELAY_TOKEN && req.headers['x-relay-token'] !== RELAY_TOKEN) {
-    const got = String(req.headers['x-relay-token'] ?? '');
-    console.error('[relay] token mismatch. got len=' + got.length +
-      ' expected len=' + RELAY_TOKEN.length +
-      ' got=' + JSON.stringify(got) + ' expected=' + JSON.stringify(RELAY_TOKEN));
     res.writeHead(401, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ ok: false, message: 'Unauthorized.' }));
     return;
