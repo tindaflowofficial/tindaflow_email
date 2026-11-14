@@ -133,8 +133,8 @@ function clientIp(req) {
 const server = http.createServer(async (req, res) => {
   // CORS: allow the Flutter web app (served from another origin) to call us.
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Relay-Token');
   res.setHeader('Access-Control-Max-Age', '86400');
 
   // Browser preflight for cross-origin POST.
