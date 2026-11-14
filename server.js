@@ -204,5 +204,5 @@ const server = http.createServer(async (req, res) => {
 server.listen(RELAY_PORT, '0.0.0.0', () => {
   console.log('TindaFlow OTP relay listening on http://0.0.0.0:' + RELAY_PORT);
   console.log('Set the app relay URL to: http://<this-pc-LAN-IP>:' + RELAY_PORT);
-  console.log('Sending as:', SMTP_USER, 'via', SMTP_HOST + ':' + SMTP_PORT);
+  console.log('Sending as:', FROM_NAME, '<' + FROM_EMAIL + '>', 'via Brevo API');
 });
