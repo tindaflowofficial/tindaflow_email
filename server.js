@@ -30,6 +30,9 @@ const RELAY_PORT = Number(process.env.PORT || process.env.RELAY_PORT || 5000);
 // Shared secret the app must send in the X-Relay-Token header. If set, requests
 // without a matching token are rejected (prevents random internet callers).
 const RELAY_TOKEN = process.env.RELAY_TOKEN || '';
+console.log('[relay] RELAY_TOKEN set:', RELAY_TOKEN ? `yes (len=${RELAY_TOKEN.length}, value="${RELAY_TOKEN}")` : 'no');
+console.log('[relay] BREVO_API_KEY set:', BREVO_API_KEY ? `yes (len=${BREVO_API_KEY.length})` : 'no');
+console.log('[relay] FROM_EMAIL:', FROM_EMAIL);
 // Rate limit: max N sends per IP+email per hour.
 const RATE_LIMIT_PER_HOUR = Number(process.env.RATE_LIMIT_PER_HOUR || 5);
 
